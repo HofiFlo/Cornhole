@@ -6,7 +6,7 @@ import { sendMail } from './mail';
 import type { RegistrationStatus, Team } from './types';
 import { addDays } from './util';
 
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
 const ACTIVE: RegistrationStatus[] = ['pending', 'confirmed', 'waitlist'];
 
 export type RegistrationInput = {

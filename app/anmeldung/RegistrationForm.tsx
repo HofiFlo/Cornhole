@@ -7,7 +7,7 @@ type Result =
   | { waitlisted: true; teamName: string }
   | { paymentReference: string; iban: string; accountHolder: string; entryFee: string; dueDate: string; teamName: string };
 
-const SUFFIX = /\s+(I|II|III|IV|V|VI|VII|VIII)$/;
+const SUFFIX = /\s+(X{0,1}(?:IX|IV|V?I{0,3}))$/;
 
 export default function RegistrationForm({ clubs }: { clubs: string[] }) {
   const [form, setForm] = useState({
