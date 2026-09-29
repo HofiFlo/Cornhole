@@ -3,7 +3,7 @@ import 'server-only';
 import crypto from 'node:crypto';
 import { config } from './config';
 import { setSetting } from './db';
-import { confirmPayment, releaseExpiredRegistrations, upsertTeams } from './registration';
+import { confirmPayment, expireRegistration, sendTeamMails, upsertTeams, type TeamMailRequest } from './registration';
 import type { Team } from './types';
 
 /** Ohne HOSTED_URL läuft die lokale App eigenständig (z. B. zum Testen oder bei Anmeldung vor Ort). */
@@ -13,7 +13,6 @@ const authHeader = () => ({ Authorization: `Bearer ${config.syncToken}` });
 
 export async function pullRegistrations() {
   if (isStandalone()) {
-    await releaseExpiredRegistrations();
     setSetting('last_sync_at', new Date().toISOString());
     return;
   }
@@ -35,6 +34,31 @@ export async function confirmPaymentSynced(teamId: number) {
     throw new Error(body?.error ?? 'Bestätigung konnte nicht gesendet werden – Internet prüfen');
   }
   await pullRegistrations();
+}
+
+async function postHosted<T>(path: string, body?: unknown): Promise<T> {
+  const res = await fetch(`${config.hostedUrl}${path}`, {
+    method: 'POST', headers: { ...authHeader(), 'Content-Type': 'application/json' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(data?.error ?? `Gehostete Instanz nicht erreichbar (${res.status}) – Internet prüfen`);
+  return data as T;
+}
+
+export async function expireRegistrationSynced(teamId: number): Promise<{ promoted: string | null }> {
+  if (isStandalone()) return expireRegistration(teamId);
+  const result = await postHosted<{ promoted: string | null }>(`/api/sync/teams/${teamId}/expire`);
+  await pullRegistrations();
+  return result;
+}
+
+/** Mails verschickt die gehostete Instanz (dort liegen die SMTP-Zugangsdaten). */
+export async function sendTeamMailsSynced(req: TeamMailRequest) {
+  if (isStandalone()) return sendTeamMails(req);
+  const result = await postHosted<Awaited<ReturnType<typeof sendTeamMails>>>('/api/sync/mail', req);
+  await pullRegistrations();
+  return result;
 }
 
 export async function setRegistrationOpenSynced(open: boolean) {

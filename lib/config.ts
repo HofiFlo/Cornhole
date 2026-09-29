@@ -12,5 +12,7 @@ export const config = {
   get paymentDays() { return Number(process.env.PAYMENT_DAYS) || 14; },
   get maxTeams() { return Number(process.env.MAX_TEAMS) || 64; },
   get syncToken() { return process.env.SYNC_TOKEN || ''; },
+  /** Öffentliche Basis-URL für Links in Mails (sonst aus der Anfrage abgeleitet). */
+  get publicUrl() { return (process.env.PUBLIC_URL || '').replace(/\/+$/, ''); },
   get hostedUrl() { return (process.env.HOSTED_URL || '').replace(/\/+$/, ''); },
 };

@@ -11,6 +11,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <nav className="admin-nav">
         <Link href="/admin" className="brand">{config.tournamentName}</Link>
         <Link href="/admin/anmeldungen">Anmeldungen</Link>
+        <Link href="/admin/mails">E-Mails</Link>
         <Link href="/admin/gruppen">Gruppen</Link>
         <Link href="/admin/spielplan">Spielplan &amp; Ergebnisse</Link>
         <Link href="/admin/ko">KO-Runde</Link>

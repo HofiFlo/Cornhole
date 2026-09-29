@@ -29,7 +29,7 @@ button, .button {
 }
 button.secondary, .button.secondary { background: #fff; color: var(--accent); }
 button.danger { background: #fff; color: var(--danger); border-color: var(--danger); }
-button.small { padding: 0.15rem 0.5rem; font-size: 0.85rem; }
+button.small, .button.small { padding: 0.15rem 0.5rem; font-size: 0.85rem; }
 button:disabled { opacity: 0.45; cursor: not-allowed; }
 
 input, select {
@@ -53,6 +53,7 @@ th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color
 .badge { display: inline-block; font-size: 0.78rem; padding: 0.1rem 0.5rem; border-radius: 999px; background: #eee; color: #333; white-space: nowrap; }
 .badge.pending { background: var(--warn-soft); color: var(--warn); }
 .badge.confirmed, .badge.finished { background: var(--accent-soft); color: var(--accent); }
+.badge.unverified { background: #f1f1f1; color: #777; border: 1px dashed #bbb; }
 .badge.waitlist, .badge.waiting { background: #eaeefa; color: #334a9b; }
 .badge.expired, .badge.rejected { background: var(--danger-soft); color: var(--danger); }
 .badge.sudden_death { background: #fde8f3; color: #9b1d61; }
@@ -68,7 +69,7 @@ th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color
 .payment-box { display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1rem; }
 .payment-box dt { color: var(--muted); }
 .payment-box dd { margin: 0; font-weight: 600; }
-.reference { font-family: ui-monospace, Consolas, monospace; }
+.reference { font-family: ui-monospace, Consolas, monospace; white-space: nowrap; }
 
 /* ---------- Admin ---------- */
 .admin-shell { display: grid; grid-template-rows: auto 1fr; min-height: 100vh; }
@@ -115,3 +116,12 @@ th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color
 /* styles/admin.css (aus der Spezifikation) */
 .club-conflict { background: #fff0f0; border-left: 3px solid #d33; }
 .club-tag { font-size: 11px; color: #888; margin-left: 6px; }
+
+.overdue { color: var(--danger); font-weight: 600; }
+.mail-composer { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 1rem; align-items: start; }
+.recipient-list { max-height: 60vh; overflow: auto; border: 1px solid var(--border); border-radius: 6px; background: #fff; }
+.recipient-list label { display: flex; gap: 0.5rem; align-items: center; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+.mail-composer textarea { font: inherit; width: 100%; min-height: 220px; padding: 0.5rem 0.6rem; border: 1px solid var(--border); border-radius: 6px; }
+.mail-composer input[type=text] { width: 100%; }
+.mail-preview { white-space: pre-wrap; background: #fbfaf7; border: 1px dashed var(--border); border-radius: 6px; padding: 0.8rem; font-size: 0.9rem; }
+@media (max-width: 900px) { .mail-composer { grid-template-columns: 1fr; } }

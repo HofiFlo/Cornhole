@@ -12,6 +12,7 @@ primary_region = "fra"
 [env]
   APP_MODE = "public"
   DATABASE_PATH = "/data/cornhole.db"
+  PUBLIC_URL = "https://anmeldung.eure-domain.at"
   TOURNAMENT_NAME = "Cornhole-Turnier 2026"
   PAYMENT_REF_PREFIX = "CH2026"
 

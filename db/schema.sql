@@ -15,10 +15,15 @@ CREATE TABLE IF NOT EXISTS teams (
   payment_reference TEXT UNIQUE,
   payment_status TEXT NOT NULL DEFAULT 'pending',       -- pending | paid
   payment_due_date TEXT,
-  registration_status TEXT NOT NULL DEFAULT 'pending',  -- pending | confirmed | rejected | waitlist | expired
+  registration_status TEXT NOT NULL DEFAULT 'pending',  -- unverified | pending | confirmed | rejected | waitlist | expired
   group_id TEXT,                                        -- 'A'..'H', erst nach Gruppenzuteilung gesetzt
   created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  confirmed_at TEXT
+  confirmed_at TEXT,
+  -- ERGÄNZT: Double-Opt-in per Bestätigungslink und Zeitpunkt der letzten Zahlungserinnerung
+  -- (bei bestehenden Datenbanken fügt lib/db.ts die Spalten automatisch hinzu)
+  email_verify_token TEXT,
+  email_verified_at TEXT,
+  last_reminder_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS group_matches (

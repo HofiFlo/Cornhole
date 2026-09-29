@@ -1,11 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { formatDate } from '@/lib/util';
 
-type Result =
-  | { waitlisted: true; teamName: string }
-  | { paymentReference: string; iban: string; accountHolder: string; entryFee: string; dueDate: string; teamName: string };
+type Sent = { verificationSent: true; email: string; teamName: string };
 
 const SUFFIX = /\s+(X{0,1}(?:IX|IV|V?I{0,3}))$/;
 
@@ -15,7 +12,7 @@ export default function RegistrationForm({ clubs }: { clubs: string[] }) {
     player2Name: '', player2Email: '', player2Phone: '',
   });
   const [suffixHint, setSuffixHint] = useState<string | null>(null);
-  const [result, setResult] = useState<Result | null>(null);
+  const [result, setResult] = useState<Sent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -58,8 +55,16 @@ export default function RegistrationForm({ clubs }: { clubs: string[] }) {
     }
   }
 
-  if (result && 'waitlisted' in result) return <WaitlistConfirmation teamName={result.teamName} />;
-  if (result) return <PaymentInstructions {...result} />;
+  if (result) {
+    return (
+      <div className="card stack">
+        <h2>Fast geschafft – bitte E-Mail bestätigen</h2>
+        <p>Wir haben einen Bestätigungslink an <strong>{result.email}</strong> geschickt. Die Anmeldung von
+          „{result.teamName}“ ist erst gültig, wenn du den Link öffnest und bestätigst. Danach bekommst du die Zahlungsdaten.</p>
+        <p className="muted">Keine Mail bekommen? Bitte auch im Spam-Ordner nachsehen. Der Link ist 48 Stunden gültig.</p>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="registration-form">
@@ -79,7 +84,7 @@ export default function RegistrationForm({ clubs }: { clubs: string[] }) {
       <fieldset>
         <legend>Spieler 1</legend>
         <input required placeholder="Name" autoComplete="name" value={form.player1Name} onChange={set('player1Name')} />
-        <input required type="email" placeholder="E-Mail" autoComplete="email" value={form.player1Email} onChange={set('player1Email')} />
+        <input required type="email" placeholder="E-Mail (an diese Adresse geht der Bestätigungslink)" autoComplete="email" value={form.player1Email} onChange={set('player1Email')} />
         <input type="tel" placeholder="Telefon" autoComplete="tel" value={form.player1Phone} onChange={set('player1Phone')} />
       </fieldset>
       <fieldset>
@@ -91,32 +96,5 @@ export default function RegistrationForm({ clubs }: { clubs: string[] }) {
       {error && <p className="error">{error}</p>}
       <button type="submit" disabled={busy}>{busy ? 'Wird gesendet…' : 'Verbindlich anmelden'}</button>
     </form>
-  );
-}
-
-function WaitlistConfirmation({ teamName }: { teamName: string }) {
-  return (
-    <div className="card stack">
-      <h2>„{teamName}“ steht auf der Warteliste</h2>
-      <p>Das Turnier ist leider bereits voll. Sobald ein Platz frei wird, bekommt ihr eine E-Mail mit den Zahlungsinformationen.
-        Bitte bis dahin <strong>noch nichts überweisen</strong>.</p>
-    </div>
-  );
-}
-
-function PaymentInstructions(r: Exclude<Result, { waitlisted: true }>) {
-  return (
-    <div className="card stack">
-      <h2>Danke für die Anmeldung von „{r.teamName}“!</h2>
-      <p>Die Anmeldung ist erst nach Zahlungseingang bestätigt. Bitte überweist die Teilnahmegebühr bis <strong>{formatDate(r.dueDate)}</strong>:</p>
-      <dl className="payment-box">
-        {r.accountHolder && <><dt>Empfänger</dt><dd>{r.accountHolder}</dd></>}
-        <dt>IBAN</dt><dd className="reference">{r.iban}</dd>
-        {r.entryFee && <><dt>Betrag</dt><dd>{r.entryFee}</dd></>}
-        <dt>Verwendungszweck</dt><dd className="reference">{r.paymentReference}</dd>
-      </dl>
-      <p className="notice">Bitte unbedingt den Verwendungszweck <strong className="reference">{r.paymentReference}</strong> angeben – nur so können wir die Zahlung zuordnen.
-        Die Daten wurden zusätzlich per E-Mail verschickt.</p>
-    </div>
   );
 }

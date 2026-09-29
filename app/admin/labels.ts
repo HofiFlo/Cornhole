@@ -1,7 +1,7 @@
 import type { KoStatus, RegistrationStatus, TournamentPhase } from '@/lib/types';
 
 export const REGISTRATION_LABELS: Record<RegistrationStatus | 'all', string> = {
-  pending: 'Offen', confirmed: 'Bestätigt', waitlist: 'Warteliste', expired: 'Verfallen', rejected: 'Abgelehnt', all: 'Alle',
+  unverified: 'E-Mail unbestätigt', pending: 'Offen', confirmed: 'Bestätigt', waitlist: 'Warteliste', expired: 'Verfallen', rejected: 'Abgelehnt', all: 'Alle',
 };
 
 export const PHASE_LABELS: Record<TournamentPhase, string> = {

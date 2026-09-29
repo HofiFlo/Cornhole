@@ -1,4 +1,4 @@
-export type RegistrationStatus = 'pending' | 'confirmed' | 'rejected' | 'waitlist' | 'expired';
+export type RegistrationStatus = 'unverified' | 'pending' | 'confirmed' | 'rejected' | 'waitlist' | 'expired';
 export type PaymentStatus = 'pending' | 'paid';
 export type TournamentPhase = 'registration' | 'setup' | 'group_stage_active' | 'ko_active' | 'finished';
 export type KoRound = '16tel' | '8tel' | 'viertel' | 'halbfinale' | 'finale';
@@ -21,6 +21,9 @@ export type Team = {
   group_id: string | null;
   created_at: string | null;
   confirmed_at: string | null;
+  email_verify_token?: string | null;
+  email_verified_at: string | null;
+  last_reminder_at: string | null;
 };
 
 export type GroupMatchRow = {

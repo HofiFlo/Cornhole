@@ -5,7 +5,9 @@ import { evaluateKehren, evaluateSets } from '@/lib/match-entry';
 import { buildFullGroupPhaseSchedule, buildGroupSchedule, GROUP_NAMES } from '@/lib/schedule';
 import { rawPointsFromBags, scoreMatch } from '@/lib/scoring';
 import { buildGroupStandings } from '@/lib/standings';
+import { fillPlaceholders, renderMail } from '@/lib/mail-templates';
 import type { KehreEntry } from '@/lib/types';
+import { isOverdue } from '@/lib/util';
 
 const k = (aHole: number, aBoard: number, bHole: number, bBoard: number): KehreEntry =>
   ({ teamA: { inHole: aHole, onBoard: aBoard }, teamB: { inHole: bHole, onBoard: bBoard } });
@@ -121,5 +123,30 @@ describe('group assignment', () => {
       expect(result[g]).toHaveLength(8);
       expect(groupConflicts(result[g], teams).size).toBe(0);
     }
+  });
+});
+
+describe('mails', () => {
+  const team = { team_name: 'Die Werfer', player1_name: 'Max', payment_reference: 'CH2026-0007', payment_due_date: '2026-10-13' };
+
+  it('ersetzt Platzhalter in freien Mails', () => {
+    const text = fillPlaceholders('Hallo {spieler1}, Team {team}: {referenz} bis {frist}, {iban} {betrag}', team,
+      { iban: 'AT11', entryFee: '30 €' });
+    expect(text).toBe('Hallo Max, Team Die Werfer: CH2026-0007 bis 13.10.2026, AT11 30 €');
+  });
+
+  it('Zahlungserinnerung enthält Referenz und Frist, Bestätigungsmail den Link', () => {
+    const reminder = renderMail(team, 'payment_reminder');
+    expect(reminder.text).toContain('CH2026-0007');
+    expect(reminder.text).toContain('13.10.2026');
+    expect(renderMail(team, 'verify_email', { verifyUrl: 'https://x/anmeldung/bestaetigen?token=abc' }).text)
+      .toContain('https://x/anmeldung/bestaetigen?token=abc');
+  });
+
+  it('überfällig nur bei offener Zahlung nach Fristende', () => {
+    const now = new Date('2026-10-14T10:00:00Z');
+    expect(isOverdue({ registration_status: 'pending', payment_due_date: '2026-10-13' }, now)).toBe(true);
+    expect(isOverdue({ registration_status: 'pending', payment_due_date: '2026-10-14' }, now)).toBe(false);
+    expect(isOverdue({ registration_status: 'confirmed', payment_due_date: '2026-10-01' }, now)).toBe(false);
   });
 });

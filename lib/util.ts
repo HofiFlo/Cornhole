@@ -30,3 +30,8 @@ export function formatDateTime(iso: string | null | undefined): string {
 export function formatTime(d: Date): string {
   return d.toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' });
 }
+
+/** Zahlungsfrist abgelaufen, aber noch nicht bezahlt (Entscheidung über Verfall trifft die Turnierleitung). */
+export function isOverdue(t: { registration_status: string; payment_due_date: string | null }, now = new Date()): boolean {
+  return t.registration_status === 'pending' && !!t.payment_due_date && t.payment_due_date < now.toISOString().slice(0, 10);
+}

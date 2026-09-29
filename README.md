@@ -30,6 +30,23 @@ npm test
 npm run typecheck
 ```
 
+## Anmeldung (öffentlich)
+
+1. Team füllt das Formular aus → Spieler 1 bekommt eine Mail mit **Bestätigungslink** (Double-Opt-in).
+2. Erst mit Klick auf „Anmeldung jetzt bestätigen“ wird ein Platz vergeben (bzw. Warteliste bei vollem Turnier)
+   und die Zahlungsdaten (IBAN, Referenz, Frist) werden angezeigt und gemailt.
+3. Nicht bestätigte Anmeldungen geben den Teamnamen nach 48 Stunden wieder frei.
+
+## Zahlungen & E-Mails (Turnierleitung)
+
+- **Anmeldungen** (`/admin/anmeldungen`): „Zahlung bestätigt“, „Erinnern“ (Zahlungserinnerung an ein Team),
+  „Verfallen lassen“ und „Mail“. Überfällige Zahlungen sind rot markiert – **Anmeldungen verfallen nie automatisch**,
+  die Turnierleitung entscheidet. Beim Verfall rückt das erste Team der Warteliste nach und bekommt die Zahlungsdaten.
+- **E-Mails** (`/admin/mails`): Rundmail an eine Empfängergruppe (alle, bestätigt, Zahlung offen, überfällig,
+  Warteliste) oder einzelne Teams; Zahlungserinnerung als Vorlage oder freie Nachricht mit Platzhaltern
+  `{team}`, `{spieler1}`, `{referenz}`, `{frist}`, `{iban}`, `{betrag}` und Vorschau.
+- Versendet wird über die gehostete Instanz (dort liegen die SMTP-Zugangsdaten); im Standalone-Betrieb direkt lokal.
+
 ## Turniertag
 
 1. **Übersicht** (`/admin`): Anmeldungen synchronisieren, Anmeldung schließen, Turnierbeginn + Minuten pro Slot setzen.
@@ -54,15 +71,15 @@ Die lokale App holt per `GET {HOSTED_URL}/api/sync/teams` alle Anmeldungen (loka
 und sendet Zahlungsbestätigungen bzw. „Anmeldung schließen“ an die gehostete Instanz. Authentifizierung
 ausschließlich über `Authorization: Bearer $SYNC_TOKEN` – derselbe Wert muss auf beiden Instanzen gesetzt sein.
 
-Nicht bezahlte Anmeldungen verfallen nach `PAYMENT_DAYS` (Standard 14) Tagen automatisch; das nächste Team
-der Warteliste rückt nach und bekommt die Zahlungsdaten per Mail.
+Die Zahlungsfrist beträgt `PAYMENT_DAYS` (Standard 14) Tage ab Bestätigung der E-Mail-Adresse. Verfall und
+Mails lösen die Turnierleitung lokal aus, ausgeführt werden sie auf der gehosteten Instanz.
 
 ## Deployment (gehostet)
 
 ```bash
 fly launch --no-deploy
 fly volumes create cornhole_data --size 1
-fly secrets set SYNC_TOKEN=... TOURNAMENT_IBAN=... TOURNAMENT_ACCOUNT_HOLDER=... ENTRY_FEE="30,00 €" \
+fly secrets set PUBLIC_URL=https://anmeldung.eure-domain.at SYNC_TOKEN=... TOURNAMENT_IBAN=... TOURNAMENT_ACCOUNT_HOLDER=... ENTRY_FEE="30,00 €" \
   SMTP_HOST=... SMTP_USER=... SMTP_PASS=... MAIL_FROM="Cornhole-Turnier <turnier@…>"
 fly deploy
 ```
@@ -85,5 +102,7 @@ Siehe `.env.example`. Ohne `SMTP_HOST` werden Mails nur in der Konsole ausgegebe
   Status `waiting`, `four_baggers.match_type`/`player_name`/`auto`/`redeemed`.
 - KO-Setzung nutzt die Standard-Setzliste (1–32) statt reiner Topf-Reihenfolge, damit Gruppensieger nicht
   gegeneinander spielen; die Vereins-/Gruppen-Trennung pro 8tel-Viertel aus der Spezifikation bleibt erhalten.
+- Anmeldung mit Double-Opt-in (neuer Status `unverified`), kein automatischer Verfall, Zahlungserinnerungen und
+  Rundmails; Spalten `email_verify_token`, `email_verified_at`, `last_reminder_at` (werden bei bestehenden DBs ergänzt).
 - Ergebnisse können korrigiert werden (Gruppenspiele während der Gruppenphase, KO-Spiele solange das Folgespiel
   noch kein Ergebnis hat).
