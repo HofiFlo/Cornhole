@@ -1,0 +1,21 @@
+/* styles/board.css – Live-Board, großes Hochformat-Display, alle 8 Gruppen einspaltig */
+.board-page { background: #0f1512; color: #eef3ef; min-height: 100vh; }
+.board-grid {
+  display: grid; grid-template-columns: 1fr; grid-template-rows: repeat(8, 1fr);
+  gap: 1vh; height: 100vh; padding: 1.5vh 2vw; box-sizing: border-box;
+}
+.group-card {
+  border: 1px solid #2c3a33; border-radius: 6px; padding: 0.6vh 1vw; display: flex; flex-direction: column;
+  overflow: hidden; background: #16201b;
+}
+.group-card h2 { font-size: 1.6vh; margin: 0 0 0.4vh; color: #7fd6a6; }
+.group-card table { width: 100%; font-size: 1.2vh; border-collapse: collapse; background: transparent; }
+.group-card th, .group-card td { padding: 0.15vh 0.5vw; text-align: left; border-bottom: 1px solid #22302a; color: inherit; }
+.group-card th { font-size: 1vh; color: #9fb3a8; }
+.group-card td.n, .group-card th.n { text-align: right; width: 7vw; font-variant-numeric: tabular-nums; }
+.group-card td.rank { width: 3vw; color: #9fb3a8; }
+.team-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw; }
+tr.qualified { font-weight: 700; }
+tr.qualified td.rank { color: #7fd6a6; }
+tr.cutoff td { border-bottom: 2px solid #7fd6a6; }
+.board-empty { display: grid; place-items: center; height: 100vh; font-size: 3vh; }

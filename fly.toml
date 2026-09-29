@@ -1,0 +1,31 @@
+# Fly.io-Konfiguration für die gehostete Anmeldung.
+# Einrichtung:
+#   fly launch --no-deploy            (App-Namen anpassen)
+#   fly volumes create cornhole_data --size 1
+#   fly secrets set SYNC_TOKEN=... TOURNAMENT_IBAN=... SMTP_HOST=... SMTP_USER=... SMTP_PASS=... MAIL_FROM=...
+#   fly deploy
+app = "cornhole-anmeldung"
+primary_region = "fra"
+
+[build]
+
+[env]
+  APP_MODE = "public"
+  DATABASE_PATH = "/data/cornhole.db"
+  TOURNAMENT_NAME = "Cornhole-Turnier 2026"
+  PAYMENT_REF_PREFIX = "CH2026"
+
+[mounts]
+  source = "cornhole_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
