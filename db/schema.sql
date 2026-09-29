@@ -102,3 +102,13 @@ CREATE TABLE IF NOT EXISTS settings (
 CREATE INDEX IF NOT EXISTS idx_kehren_match ON kehren(match_type, match_id);
 CREATE INDEX IF NOT EXISTS idx_group_matches_group ON group_matches(group_id);
 CREATE INDEX IF NOT EXISTS idx_ko_sets_match ON ko_sets(match_id);
+
+-- ERGÄNZT: Postausgang für den Testbetrieb ohne Mailserver (SMTP_HOST leer) – Mails sind unter /admin/postausgang sichtbar
+CREATE TABLE IF NOT EXISTS mail_outbox (
+  id INTEGER PRIMARY KEY,
+  template TEXT,
+  recipients TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  body TEXT NOT NULL,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);

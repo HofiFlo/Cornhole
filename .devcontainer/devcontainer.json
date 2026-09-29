@@ -1,0 +1,11 @@
+{
+  "name": "Cornhole-Turnier (Testapp)",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "containerEnv": { "APP_MODE": "local" },
+  "postCreateCommand": "npm install && npm run build && npm run seed -- --demo --reset",
+  "postAttachCommand": { "app": "npm start" },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": { "label": "Cornhole-App", "onAutoForward": "openBrowser" }
+  }
+}

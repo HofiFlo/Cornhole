@@ -74,9 +74,9 @@ th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color
 /* ---------- Admin ---------- */
 .admin-shell { display: grid; grid-template-rows: auto 1fr; min-height: 100vh; }
 .admin-nav { display: flex; gap: 0.2rem; align-items: center; flex-wrap: wrap; padding: 0.5rem 1rem; background: #1d2a24; }
-.admin-nav a { color: #e8efe9; text-decoration: none; padding: 0.35rem 0.7rem; border-radius: 6px; }
+.admin-nav a { color: #e8efe9; text-decoration: none; padding: 0.3rem 0.5rem; border-radius: 6px; font-size: 0.93rem; }
 .admin-nav a:hover { background: rgba(255,255,255,0.1); }
-.admin-nav .brand { font-weight: 700; margin-right: 1rem; color: #fff; }
+.admin-nav .brand { font-weight: 700; margin-right: 0.5rem; color: #fff; }
 .admin-nav .spacer { flex: 1; }
 .admin-main { padding: 1.2rem 1.5rem 3rem; max-width: 1400px; width: 100%; margin: 0 auto; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; }

@@ -7,6 +7,44 @@ Next.js 16 (App Router) + SQLite (better-sqlite3). Eine Codebasis, zwei Betriebs
 | `public` | gehostet (Fly.io/VPS mit Volume) | nur `/anmeldung`, `/api/register`, `/api/club-teams`, `/api/clubs` und die tokengeschützten `/api/sync/*` |
 | `local` | Laptop am Turniertag, lokales WLAN, kein Login | Verwaltung unter `/admin`, Live-Board unter `/board/live` |
 
+## Testapp ausprobieren
+
+### Variante A: im Browser mit GitHub Codespaces (keine Installation)
+
+1. Auf GitHub das Repository öffnen und oben links den Branch `claude/cornhole-tournament-app-xl4i57` wählen.
+2. Grüner Button **Code** → Reiter **Codespaces** → **Create codespace on claude/cornhole-tournament-app-xl4i57**.
+3. Warten (beim ersten Mal ca. 2–4 Minuten): Pakete werden installiert, die App gebaut und Demo-Daten angelegt.
+4. Die App öffnet sich automatisch in einem neuen Tab (sonst unten im Reiter **Ports** bei Port 3000 auf die Weltkugel klicken).
+
+### Variante B: auf dem eigenen Computer
+
+1. [Node.js 22 LTS](https://nodejs.org) installieren.
+2. Im Terminal:
+   ```bash
+   git clone https://github.com/HofiFlo/Cornhole && cd Cornhole
+   git checkout claude/cornhole-tournament-app-xl4i57
+   npm install
+   npm run build
+   npm run demo
+   ```
+3. Im Browser <http://localhost:3000> öffnen.
+
+`npm run demo` setzt die Testdatenbank jedes Mal zurück: 60 bezahlte Teams, 3 offene Zahlungen (1 überfällig),
+2 auf der Warteliste. Ohne Mailserver landen alle Mails unter **Postausgang (Test)** – dort kann man auch den
+Bestätigungslink anklicken.
+
+### Was man ausprobieren kann
+
+1. **Anmeldeformular ↗** (oben rechts) → Team anmelden, Verein „CC Donaustadt“ eintippen → Zusatz-Vorschlag erscheint.
+2. **Postausgang (Test)** → Bestätigungslink klicken → „Anmeldung jetzt bestätigen“ → Zahlungsdaten.
+   Das 64. Team bekommt einen Platz, ab dem 65. geht es auf die Warteliste.
+3. **Anmeldungen** → „Zahlung bestätigt“, „Erinnern“, „Verfallen lassen“ (Warteliste rückt nach), Filter „Überfällig“.
+4. **E-Mails** → Rundmail mit Platzhaltern und Vorschau.
+5. **Übersicht** → Anmeldung schließen. **Gruppen** → „Rest zufällig verteilen“ → „Gruppen fixieren & Spielplan generieren“.
+6. **Spielplan & Ergebnisse** → Spiele erfassen (pro Kehre Säckchen im Loch / auf dem Brett), **Live-Board ↗** in
+   einem zweiten Tab beobachten (aktualisiert sich alle 15 s).
+7. Nach dem letzten Gruppenspiel **KO-Runde** erzeugen und bis zum Finale spielen.
+
 ## Schnellstart (lokal)
 
 ```bash

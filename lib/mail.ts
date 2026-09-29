@@ -1,5 +1,6 @@
 import 'server-only';
 import nodemailer from 'nodemailer';
+import { db } from './db';
 import { renderMail, type MailData, type MailTemplate } from './mail-templates';
 import type { Team } from './types';
 
@@ -31,7 +32,10 @@ export async function sendMail(team: Recipient, template: MailTemplate, data: Ma
   const to = [team.player1_email, team.player2_email].filter(Boolean).join(', ');
   const tx = getTransporter();
   if (!tx) {
+    // Testbetrieb ohne Mailserver: Mail in den Postausgang (/admin/postausgang) und in die Konsole
     console.log(`[mail:${template}] an ${to}\nBetreff: ${subject}\n${text}\n`);
+    db().prepare('INSERT INTO mail_outbox (template, recipients, subject, body) VALUES (?, ?, ?, ?)')
+      .run(template, to, subject, text);
     return true;
   }
   try {
@@ -42,3 +46,5 @@ export async function sendMail(team: Recipient, template: MailTemplate, data: Ma
     return false;
   }
 }
+
+export const isMailConfigured = () => !!process.env.SMTP_HOST;
